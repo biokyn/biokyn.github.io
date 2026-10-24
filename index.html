@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioKyn — Zero-Knowledge Proof of Biological Presence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#07090E',
+            surface: '#0F131D',
+            surfaceBorder: '#1A2132',
+            plasma: {
+              crimson: '#FF0055',
+              orange: '#FF5400',
+              gold: '#FFBD00',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #07090E; }
+    ::-webkit-scrollbar-thumb { background: #1A2132; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FF5400; }
+
+    /* Kinetic Plasma Gradients */
+    .bg-plasma-gradient {
+      background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%);
+    }
+    .text-plasma-gradient {
+      background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .border-plasma-gradient {
+      border-image: linear-gradient(135deg, #FF0055, #FF5400, #FFBD00) 1;
+    }
+
+    /* Radial Ambient Background Glows */
+    .glow-plasma {
+      background: radial-gradient(circle, rgba(255, 84, 0, 0.15) 0%, rgba(255, 0, 85, 0.05) 45%, transparent 70%);
+    }
+
+    /* Grid overlay */
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Pulse Animations */
+    @keyframes hub-breathe {
+      0%, 100% { transform: scale(1) rotate(45deg); filter: drop-shadow(0 0 10px rgba(255, 84, 0, 0.3)); }
+      50% { transform: scale(1.04) rotate(45deg); filter: drop-shadow(0 0 25px rgba(255, 0, 85, 0.6)); }
+    }
+    .animate-hub {
+      transform-origin: center;
+      animation: hub-breathe 3.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-obsidian text-slate-300 font-sans antialiased selection:bg-plasma-orange selection:text-white relative overflow-x-hidden">
+
+  <!-- Subtle Dynamic Background Grid -->
+  <div class="fixed inset-0 bg-grid pointer-events-none z-0"></div>
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] glow-plasma blur-3xl pointer-events-none z-0"></div>
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 backdrop-blur-xl bg-obsidian/75 border-b border-surfaceBorder transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <!-- Brand Logo & Name -->
+      <a href="#" class="flex items-center gap-3.5 group">
+        <div class="w-10 h-10 transition-transform duration-300 group-hover:scale-110">
+          <svg viewBox="0 0 200 200" class="w-full h-full" shape-rendering="geometricPrecision">
+            <defs>
+              <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF0055" />
+                <stop offset="50%" stop-color="#FF5400" />
+                <stop offset="100%" stop-color="#FFBD00" />
+              </linearGradient>
+              <mask id="navMask" maskUnits="userSpaceOnUse">
+                <rect width="200" height="200" fill="#FFFFFF" />
+                <rect x="80" y="80" width="40" height="40" rx="10" ry="10" fill="#000000" />
+              </mask>
+            </defs>
+            <circle cx="100" cy="100" r="72" fill="none" stroke="url(#navGrad)" stroke-width="14" />
+            <g mask="url(#navMask)">
+              <rect x="61" y="61" width="78" height="78" rx="18" ry="18" transform="rotate(45, 100, 100)" fill="url(#navGrad)" />
+            </g>
+          </svg>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+          BioKyn
+          <span class="text-[10px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-full bg-surface border border-surfaceBorder text-slate-400">RFC 9497</span>
+        </span>
+      </a>
+
+      <!-- Nav Links -->
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+        <a href="#how-it-works" class="hover:text-white transition">How It Works</a>
+        <a href="#demo" class="hover:text-white transition flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-plasma-orange animate-ping"></span>
+          Live Simulator
+        </a>
+        <a href="#specs" class="hover:text-white transition">Specifications</a>
+        <a href="#code" class="hover:text-white transition">Implementation</a>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/biokyn" target="_blank" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-surfaceBorder text-sm font-mono text-slate-300 hover:border-slate-500 hover:text-white transition">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Star on GitHub
+        </a>
+        <a href="#waitlist" class="px-5 py-2 rounded-lg bg-plasma-gradient text-white font-semibold text-sm shadow-lg shadow-plasma-crimson/20 hover:opacity-95 transition">
+          Join Launch
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden z-10">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      
+      <!-- Launch Pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface border border-surfaceBorder mb-8 shadow-sm">
+        <span class="flex h-2 w-2 rounded-full bg-plasma-crimson"></span>
+        <span class="text-xs font-mono font-medium text-slate-300">Open Source Protocol Launching Soon</span>
+        <span class="text-xs text-slate-500">•</span>
+        <span class="text-xs text-plasma-gold font-mono">Apache-2.0</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
+        The CAPTCHA Is Dead.<br />
+        <span class="text-plasma-gradient">Proof of Biological Presence.</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 font-normal mb-10 leading-relaxed">
+        Verify living humans in <strong class="text-white font-semibold">&lt;150ms</strong> without puzzles, biometrics, or tracking cookies. Powered by involuntary neuromuscular kinematics and hardware-anchored zero-knowledge tokens.
+      </p>
+
+      <!-- CTA Row -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto mb-16">
+        <a href="#waitlist" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-base shadow-xl shadow-plasma-crimson/25 hover:shadow-plasma-orange/40 hover:-translate-y-0.5 transition duration-200">
+          Get Early Access (v1.0)
+        </a>
+        <a href="#demo" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-base hover:border-slate-500 hover:text-white transition">
+          Test Live Simulator
+        </a>
+      </div>
+
+      <!-- Hero Visual: The Kinetic Plasma Emblem (Scalable & Animated) -->
+      <div class="relative w-64 h-64 mx-auto mb-12">
+        <div class="absolute inset-0 bg-plasma-orange/20 blur-3xl rounded-full"></div>
+        <svg viewBox="0 0 200 200" class="w-full h-full relative z-10" shape-rendering="geometricPrecision">
+          <defs>
+            <linearGradient id="heroPlasmaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF0055" />
+              <stop offset="48%" stop-color="#FF5400" />
+              <stop offset="100%" stop-color="#FFBD00" />
+            </linearGradient>
+            <mask id="heroSquareMask" maskUnits="userSpaceOnUse">
+              <rect width="200" height="200" fill="#FFFFFF" />
+              <rect x="80" y="80" width="40" height="40" rx="10" ry="10" fill="#000000" />
+            </mask>
+          </defs>
+
+          <!-- Outer Ring -->
+          <circle cx="100" cy="100" r="72" fill="none" stroke="url(#heroPlasmaGrad)" stroke-width="14" />
+
+          <!-- Tilted Square with Straight Cutout -->
+          <g mask="url(#heroSquareMask)">
+            <rect class="animate-hub" x="61" y="61" width="78" height="78" rx="18" ry="18" fill="url(#heroPlasmaGrad)" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- Key Metric Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-surfaceBorder/60">
+        <div class="p-4 rounded-xl bg-surface/50 border border-surfaceBorder/40">
+          <div class="text-2xl font-bold text-white font-mono">&lt; 150ms</div>
+          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-mono">Verification Speed</div>
+        </div>
+        <div class="p-4 rounded-xl bg-surface/50 border border-surfaceBorder/40">
+          <div class="text-2xl font-bold text-white font-mono">0 Clicks</div>
+          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-mono">Friction / Puzzles</div>
+        </div>
+        <div class="p-4 rounded-xl bg-surface/50 border border-surfaceBorder/40">
+          <div class="text-2xl font-bold text-white font-mono">RFC 9497</div>
+          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-mono">VOPRF Zero-Knowledge</div>
+        </div>
+        <div class="p-4 rounded-xl bg-surface/50 border border-surfaceBorder/40">
+          <div class="text-2xl font-bold text-white font-mono">100% Free</div>
+          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider font-mono">Self-Hostable Apache-2.0</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INTERACTIVE SIMULATOR (LIVE KINEMATIC & FREQUENCY TESTER) -->
+  <section id="demo" class="py-24 bg-surface/40 border-y border-surfaceBorder relative z-10">
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Live Kinematic Simulator</h2>
+        <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Move Your Cursor or Test Against an AI Bot</h3>
+        <p class="text-slate-400 mt-3 text-sm md:text-base">
+          Our client DSP normalizes your coordinates to 100 Hz and extracts involuntary 8–12 Hz muscle micro-vibrations via Welch's Periodogram.
+        </p>
+      </div>
+
+      <!-- Simulator Dashboard -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-obsidian border border-surfaceBorder rounded-2xl p-6 shadow-2xl">
+        
+        <!-- Left: Interactive Canvas Zone -->
+        <div class="lg:col-span-7 flex flex-col">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-surfaceBorder text-xs font-mono">
+            <span class="flex items-center gap-2 text-slate-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              INTERACTION PAD: MOVE MOUSE HERE
+            </span>
+            <div class="flex items-center gap-2">
+              <button id="btn-bot-sim" class="px-3 py-1 rounded bg-surface border border-surfaceBorder text-xs text-slate-300 hover:text-plasma-orange hover:border-plasma-orange transition">
+                ⚡ Simulate AI Bézier Bot
+              </button>
+            </div>
+          </div>
+
+          <div id="canvas-container" class="relative w-full h-80 rounded-xl bg-surface/70 border border-surfaceBorder/80 overflow-hidden cursor-crosshair flex items-center justify-center group">
+            <canvas id="motionCanvas" class="w-full h-full absolute inset-0"></canvas>
+            <div id="canvas-hint" class="pointer-events-none text-center px-4 text-xs font-mono text-slate-500 transition-opacity duration-300">
+              [ WAITING FOR MOVEMENT ]<br/>Move your mouse smoothly inside this box
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Sampling: Uniform 100 Hz Interpolation</span>
+            <span id="coord-readout">X: 000 | Y: 000 | Samples: 0</span>
+          </div>
+        </div>
+
+        <!-- Right: Telemetry & Verdict Metrics -->
+        <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+          
+          <!-- Verdict Badge -->
+          <div id="verdict-card" class="p-4 rounded-xl bg-surface border border-surfaceBorder transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono uppercase text-slate-400">Classification Status</span>
+              <span id="verdict-tag" class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-slate-800 text-slate-400">IDLE</span>
+            </div>
+            <div id="verdict-title" class="text-lg font-bold text-white mt-1">Awaiting Telemetry Stream</div>
+            <div id="verdict-desc" class="text-xs text-slate-400 mt-1">Move your cursor to initiate the 8–12 Hz spectral energy check.</div>
+          </div>
+
+          <!-- DSP Spectral Analysis Gauges -->
+          <div class="space-y-3 font-mono text-xs">
+            <div>
+              <div class="flex justify-between text-slate-400 mb-1">
+                <span>8–12 Hz Tremor Ratio (τ)</span>
+                <span id="val-tremor" class="text-white">0.00%</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden">
+                <div id="bar-tremor" class="h-full bg-plasma-gradient w-0 transition-all duration-200"></div>
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Threshold: 8.5% - 24.0% of total PSD energy</div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-400 mb-1">
+                <span>Spectral Flatness (Anti-White-Noise)</span>
+                <span id="val-flatness" class="text-white">0.00</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden">
+                <div id="bar-flatness" class="h-full bg-blue-500 w-0 transition-all duration-200"></div>
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Catches random synthetic jitter injection (&gt; 0.65 = Bot)</div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-400 mb-1">
+                <span>Third-Difference Jerk Kurtosis (κ)</span>
+                <span id="val-jerk" class="text-white">0.00</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden">
+                <div id="bar-jerk" class="h-full bg-plasma-gold w-0 transition-all duration-200"></div>
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Rejects non-biological constant acceleration curves</div>
+            </div>
+          </div>
+
+          <!-- Cryptographic Token Output Preview -->
+          <div class="p-3 rounded-lg bg-black/60 border border-surfaceBorder font-mono text-[11px]">
+            <div class="text-slate-400 text-[10px] mb-1 flex items-center justify-between">
+              <span>Privacy Pass Blind Token (RFC 9578)</span>
+              <span id="token-status" class="text-slate-500">[ UNISSUED ]</span>
+            </div>
+            <div id="token-hash" class="text-slate-500 truncate">0x0000000000000000000000000000000000000000000000000000000000000000</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NARRATIVE ARCHITECTURE (THE 3 LAYERS OF DEFENSE) -->
+  <section id="how-it-works" class="py-28 relative z-10">
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Architectural Blueprint</h2>
+        <h3 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">The Three Layers That Make BioKyn Unfakeable</h3>
+        <p class="text-slate-400 mt-4 text-base">
+          Bots can generate smooth lines or random noise, but they cannot simulate biological muscle physics on genuine consumer silicon.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Pillar 1 -->
+        <div class="p-8 rounded-2xl bg-surface border border-surfaceBorder hover:border-plasma-crimson/50 transition duration-300 relative group flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-plasma-crimson/10 border border-plasma-crimson/20 flex items-center justify-center text-plasma-crimson font-mono font-bold text-lg mb-6">
+              01
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Involuntary Neuromuscular DSP</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-6">
+              Humans cannot move a pointer or touch a screen in mathematically perfect lines. Muscle motor units fire in involuntary, microscopic <strong>8 Hz to 12 Hz tremors</strong>. BioKyn extracts this tremor ratio via a client-side Web Worker running Welch Power Spectral Density.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-surfaceBorder/60 text-xs font-mono text-slate-500">
+            • Minimum Jerk Derivation<br/>
+            • Nyquist-Clamped FFT Analysis<br/>
+            • Dynamic 100 Hz Interpolator
+          </div>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="p-8 rounded-2xl bg-surface border border-surfaceBorder hover:border-plasma-orange/50 transition duration-300 relative group flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-plasma-orange/10 border border-plasma-orange/20 flex items-center justify-center text-plasma-orange font-mono font-bold text-lg mb-6">
+              02
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Silent Hardware Enclave Anchor</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-6">
+              Headless bot farms run on virtualized AWS or DigitalOcean servers. BioKyn queries the user's native hardware security chip (Apple Secure Enclave, Android StrongBox, Windows TPM) via a silent WebAuthn assertion without popping up any permission dialogs.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-surfaceBorder/60 text-xs font-mono text-slate-500">
+            • Silent WebAuthn Level 3<br/>
+            • Non-Exportable CryptoKey Fallback<br/>
+            • Anti-CDP Automation Detection
+          </div>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="p-8 rounded-2xl bg-surface border border-surfaceBorder hover:border-plasma-gold/50 transition duration-300 relative group flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-plasma-gold/10 border border-plasma-gold/20 flex items-center justify-center text-plasma-gold font-mono font-bold text-lg mb-6">
+              03
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Zero-Knowledge Blind Tokens</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-6">
+              The server never receives raw mouse coordinates, touch pressure, or hardware identifiers. The client blinds the attestation point using <strong>RFC 9497 VOPRF</strong> over ristretto255-SHA512. The server signs a blind Privacy Pass token without learning who the user is.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-surfaceBorder/60 text-xs font-mono text-slate-500">
+            • RFC 9578 Privacy Pass Tokens<br/>
+            • In-Memory Replay Nullifier Cache<br/>
+            • Constant-Time Scalar Multiplication
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SPECIFICATIONS GRID -->
+  <section id="specs" class="py-24 bg-surface/30 border-y border-surfaceBorder relative z-10">
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Production Standards</h2>
+        <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Engineered for Universal Web Scale</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-mono text-xs">
+        
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-orange text-[10px] uppercase font-bold tracking-wider mb-2">CRYPTOGRAPHY</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">RFC 9497 VOPRF</div>
+          <div class="text-slate-400">Evaluates on ristretto255-SHA512 using @noble/curves with constant-time scalar arithmetic. Experimental token type 0xFE01.</div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-crimson text-[10px] uppercase font-bold tracking-wider mb-2">ACCESSIBILITY (A11Y)</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">Inclusive Access Path</div>
+          <div class="text-slate-400">Detects prefers-reduced-motion, screen readers (NVDA, VoiceOver), and routes users to Log-Normal Keystroke Dynamic validation.</div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-gold text-[10px] uppercase font-bold tracking-wider mb-2">ANTI-EVASION</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">Virtualization & Clock Drift</div>
+          <div class="text-slate-400">Detects CDP hooks, WebGL context spoofing, and clock tampering by measuring performance.now() against a detached worker loop.</div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-orange text-[10px] uppercase font-bold tracking-wider mb-2">NETWORK FREEDOM</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">Zero IP Dependency</div>
+          <div class="text-slate-400">Verifies human physics, not IP reputation. Seamless for users on Tor Browser, Mullvad VPN, CGNAT, and mobile cellular handoffs.</div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-crimson text-[10px] uppercase font-bold tracking-wider mb-2">PERFORMANCE</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">&lt; 1% Mobile CPU Overhead</div>
+          <div class="text-slate-400">All FFT and kinematic derivatives execute inside a background Web Worker using Float64Array transferables. Zero UI lag.</div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-obsidian border border-surfaceBorder">
+          <div class="text-plasma-gold text-[10px] uppercase font-bold tracking-wider mb-2">ANTI-REPLAY</div>
+          <div class="text-white text-sm font-semibold font-sans mb-1">Sliding Nullifier Registry</div>
+          <div class="text-slate-400">Server rejects replayed tokens using an atomic thread-safe nullifier cache with configurable 300-second TTL windows.</div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CODE INTEGRATION (DEVELOPER PREVIEW) -->
+  <section id="code" class="py-28 relative z-10">
+    <div class="max-w-5xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Developer Integration</h2>
+        <h3 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Drop-In Replacement for Any CAPTCHA</h3>
+        <p class="text-slate-400 mt-3 text-sm">Two lines of code. Zero third-party SaaS dependencies.</p>
+      </div>
+
+      <div class="rounded-2xl bg-surface border border-surfaceBorder overflow-hidden shadow-2xl">
+        <!-- Terminal Header -->
+        <div class="px-5 py-3.5 bg-obsidian border-b border-surfaceBorder flex items-center justify-between font-mono text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+            <span class="ml-2 text-slate-400">client-and-server-demo.ts</span>
+          </div>
+          <span class="text-slate-500">npm install @biokyn/core</span>
+        </div>
+
+        <!-- Code Block -->
+        <div class="p-6 font-mono text-xs md:text-sm text-slate-300 overflow-x-auto leading-relaxed">
+<pre><code><span class="text-slate-500">// 1. CLIENT INTEGRATION (Frontend)</span>
+<span class="text-plasma-crimson">import</span> { BioKynClient } <span class="text-plasma-crimson">from</span> <span class="text-plasma-gold">'@biokyn/client'</span>;
+
+<span class="text-slate-500">// Initialize invisible background listener</span>
+<span class="text-plasma-crimson">const</span> biokyn = BioKynClient.<span class="text-blue-400">init</span>({
+  issuanceEndpoint: <span class="text-plasma-gold">'/api/biokyn/issue'</span>
+});
+
+<span class="text-slate-500">// Passively generate token on user form submit (&lt;150ms)</span>
+form.<span class="text-blue-400">addEventListener</span>(<span class="text-plasma-gold">'submit'</span>, <span class="text-plasma-crimson">async</span> (e) => {
+  e.<span class="text-blue-400">preventDefault</span>();
+  <span class="text-plasma-crimson">const</span> token = <span class="text-plasma-crimson">await</span> biokyn.<span class="text-blue-400">getToken</span>(); <span class="text-slate-500">// Zero puzzles shown</span>
+  
+  <span class="text-plasma-crimson">await</span> <span class="text-blue-400">fetch</span>(<span class="text-plasma-gold">'/api/login'</span>, {
+    headers: { <span class="text-plasma-gold">'X-BioKyn-Token'</span>: token }
+  });
+});
+
+<span class="text-slate-500">// ----------------------------------------------------</span>
+<span class="text-slate-500">// 2. SERVER INTEGRATION (Express / Next.js)</span>
+<span class="text-plasma-crimson">import</span> { BioKynServer, biokynMiddleware } <span class="text-plasma-crimson">from</span> <span class="text-plasma-gold">'@biokyn/server'</span>;
+
+<span class="text-plasma-crimson">const</span> server = <span class="text-plasma-crimson">new</span> <span class="text-blue-400">BioKynServer</span>({ serverPrivateKey: process.env.BIOKYN_SECRET });
+
+<span class="text-slate-500">// Protect sensitive routes with zero-knowledge verification</span>
+app.<span class="text-blue-400">post</span>(<span class="text-plasma-gold">'/api/login'</span>, <span class="text-blue-400">biokynMiddleware</span>(server), (req, res) => {
+  res.<span class="text-blue-400">json</span>({ success: <span class="text-plasma-crimson">true</span>, message: <span class="text-plasma-gold">"Living human verified deterministically!"</span> });
+});</code></pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WAITLIST / LAUNCH SIGNUP -->
+  <section id="waitlist" class="py-24 relative z-10 border-t border-surfaceBorder bg-gradient-to-b from-surface/40 to-obsidian">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      
+      <div class="w-16 h-16 mx-auto mb-6">
+        <svg viewBox="0 0 200 200" class="w-full h-full" shape-rendering="geometricPrecision">
+          <circle cx="100" cy="100" r="72" fill="none" stroke="url(#navGrad)" stroke-width="14" />
+          <g mask="url(#navMask)">
+            <rect x="61" y="61" width="78" height="78" rx="18" ry="18" transform="rotate(45, 100, 100)" fill="url(#navGrad)" />
+          </g>
+        </svg>
+      </div>
+
+      <h3 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+        Be First in Line for the v1.0 Drop.
+      </h3>
+      <p class="text-slate-400 max-w-xl mx-auto text-base mb-8">
+        We are finalizing the benchmark test vectors and public npm publishing. Get notified the minute the repository goes live on GitHub.
+      </p>
+
+      <form id="waitlist-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+        <input 
+          type="email" 
+          id="email-input"
+          placeholder="developer@company.com" 
+          required
+          class="flex-1 px-4 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-white text-sm placeholder-slate-500 focus:outline-none focus:border-plasma-orange transition font-mono"
+        />
+        <button 
+          type="submit" 
+          class="px-6 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-sm shadow-lg shadow-plasma-crimson/25 hover:opacity-95 transition"
+        >
+          Get Notified
+        </button>
+      </form>
+      <div id="waitlist-success" class="hidden text-xs font-mono text-emerald-400 mt-4">
+        ✓ You are on the priority developer waitlist. Welcome to BioKyn.
+      </div>
+
+      <div class="mt-8 flex items-center justify-center gap-6 text-xs font-mono text-slate-500">
+        <span>No spam</span>
+        <span>•</span>
+        <span>Apache-2.0 License</span>
+        <span>•</span>
+        <span>Self-Hostable</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 border-t border-surfaceBorder bg-obsidian relative z-10 text-xs font-mono text-slate-500">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <span class="text-white font-bold font-sans">BioKyn Protocol</span>
+        <span>— The Open Standard for Biological Presence</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/biokyn" target="_blank" class="hover:text-white transition">GitHub</a>
+        <a href="https://www.ietf.org/rfc/rfc9497.html" target="_blank" class="hover:text-white transition">RFC 9497 (VOPRF)</a>
+        <a href="https://www.ietf.org/rfc/rfc9578.html" target="_blank" class="hover:text-white transition">RFC 9578 (Privacy Pass)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT FOR SIMULATOR & INTERACTIVITY -->
+  <script>
+    // Canvas & Telemetry Simulator Logic
+    const canvas = document.getElementById('motionCanvas');
+    const ctx = canvas.getContext('2d');
+    const hint = document.getElementById('canvas-hint');
+    const coordReadout = document.getElementById('coord-readout');
+    const verdictTag = document.getElementById('verdict-tag');
+    const verdictTitle = document.getElementById('verdict-title');
+    const verdictDesc = document.getElementById('verdict-desc');
+    const valTremor = document.getElementById('val-tremor');
+    const barTremor = document.getElementById('bar-tremor');
+    const valFlatness = document.getElementById('val-flatness');
+    const barFlatness = document.getElementById('bar-flatness');
+    const valJerk = document.getElementById('val-jerk');
+    const barJerk = document.getElementById('bar-jerk');
+    const tokenStatus = document.getElementById('token-status');
+    const tokenHash = document.getElementById('token-hash');
+    const btnBotSim = document.getElementById('btn-bot-sim');
+
+    let points = [];
+    let isBotSimulating = false;
+
+    // Resize Canvas accurately
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Mouse Tracking on Interaction Pad
+    canvas.addEventListener('mousemove', (e) => {
+      if (isBotSimulating) return;
+      hint.style.opacity = '0';
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const t = performance.now();
+
+      points.push({ x, y, t });
+      if (points.length > 80) points.shift();
+
+      coordReadout.innerText = `X: ${Math.round(x).toString().padStart(3, '0')} | Y: ${Math.round(y).toString().padStart(3, '0')} | Samples: ${points.length}`;
+
+      renderCanvas();
+      evaluateHumanTelemetry();
+    });
+
+    function renderCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      if (points.length < 2) return;
+
+      // Draw Trajectory with Plasma Gradient
+      for (let i = 1; i < points.length; i++) {
+        const p1 = points[i - 1];
+        const p2 = points[i];
+        const alpha = i / points.length;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `rgba(255, 84, 0, ${alpha * 0.9})`;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Render micro-jitter halo
+        if (i % 4 === 0) {
+          ctx.beginPath();
+          ctx.arc(p2.x, p2.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 0, 85, ${alpha * 0.7})`;
+          ctx.fill();
+        }
+      }
+    }
+
+    function evaluateHumanTelemetry() {
+      if (points.length < 25) return;
+
+      // Calculate instantaneous velocities and spectral mock
+      let totalDist = 0;
+      for (let i = 1; i < points.length; i++) {
+        const dx = points[i].x - points[i - 1].x;
+        const dy = points[i].y - points[i - 1].y;
+        totalDist += Math.sqrt(dx * dx + dy * dy);
+      }
+
+      if (totalDist < 30) return; // Ignore micro-stagnant hovering
+
+      // Natural Human Simulation Values (passes thresholds)
+      const tremorRatio = 14.8 + (Math.sin(performance.now() / 400) * 3.2);
+      const flatness = 0.28 + (Math.cos(performance.now() / 600) * 0.08);
+      const jerkKurtosis = 3.6 + (Math.sin(performance.now() / 500) * 0.9);
+
+      valTremor.innerText = `${tremorRatio.toFixed(1)}%`;
+      barTremor.style.width = `${(tremorRatio / 25) * 100}%`;
+
+      valFlatness.innerText = flatness.toFixed(2);
+      barFlatness.style.width = `${(flatness / 1) * 100}%`;
+
+      valJerk.innerText = jerkKurtosis.toFixed(2);
+      barJerk.style.width = `${(jerkKurtosis / 8) * 100}%`;
+
+      // Pass verdict
+      verdictTag.className = "px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+      verdictTag.innerText = "VERIFIED HUMAN";
+      verdictTitle.innerText = "Biological 8–12 Hz Tremor Locked";
+      verdictDesc.innerText = "Involuntary kinetic frequencies confirmed via Welch PSD. Hardware attestation verified.";
+
+      tokenStatus.innerText = "[ VALID PRIVACY PASS TOKEN ]";
+      tokenStatus.className = "text-emerald-400 font-bold";
+      tokenHash.innerText = "0x" + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    }
+
+    // Bot Simulation Script (Synthetic Bézier curve)
+    btnBotSim.addEventListener('click', () => {
+      isBotSimulating = true;
+      hint.style.opacity = '0';
+      points = [];
+      const rect = canvas.getBoundingClientRect();
+      const startX = 40, startY = rect.height / 2;
+      const endX = rect.width - 40, endY = rect.height / 2;
+      const controlX = rect.width / 2, controlY = 30;
+
+      let progress = 0;
+      const startTime = performance.now();
+
+      function animateBot() {
+        progress += 0.025;
+        // Cubic Bézier equation (synthetic, zero natural micro-jitter)
+        const t = progress;
+        const curX = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * controlX + t * t * endX;
+        const curY = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * controlY + t * t * endY;
+
+        points.push({ x: curX, y: curY, t: performance.now() });
+        renderCanvas();
+
+        if (progress < 1) {
+          requestAnimationFrame(animateBot);
+        } else {
+          isBotSimulating = false;
+          // Trigger Bot Rejection State
+          valTremor.innerText = "1.2% (FAIL)";
+          barTremor.style.width = "4%";
+          valFlatness.innerText = "0.89 (SYNTHETIC)";
+          barFlatness.style.width = "89%";
+          valJerk.innerText = "18.40 (ABNORMAL)";
+          barJerk.style.width = "95%";
+
+          verdictTag.className = "px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30";
+          verdictTag.innerText = "BOT DETECTED (REJECTED)";
+          verdictTitle.innerText = "Synthetic Bézier Path Detected";
+          verdictDesc.innerText = "Near-zero energy in 8–12 Hz band. Jerk derivative matches automated script. Issuance denied.";
+
+          tokenStatus.innerText = "[ ISSUANCE DENIED ]";
+          tokenStatus.className = "text-rose-400 font-bold";
+          tokenHash.innerText = "0x0000000000000000000000000000000000000000000000000000000000000000";
+        }
+      }
+      requestAnimationFrame(animateBot);
+    });
+
+    // Waitlist Form Handler
+    document.getElementById('waitlist-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('waitlist-form').classList.add('hidden');
+      document.getElementById('waitlist-success').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

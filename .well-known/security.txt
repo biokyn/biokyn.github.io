@@ -1,50 +1,5 @@
-# security.txt — RFC 9116
-# BioKyn vulnerability disclosure policy
-#
-# Verify this file is current at:
-# https://biokyn.js.org/.well-known/security.txt
-
-Contact: mailto:aswanthr82@gmail.com
 Contact: https://github.com/biokyn/biokyn/security/advisories/new
-Expires: 2027-10-26T00:00:00.000Z
+Expires: 2027-10-30T00:00:00.000Z
 Preferred-Languages: en
+Policy: https://github.com/biokyn/biokyn/blob/main/SECURITY.md
 Canonical: https://biokyn.js.org/.well-known/security.txt
-Policy: https://biokyn.js.org/security
-Acknowledgments: https://biokyn.js.org/security#acknowledgments
-
-# -----------------------------------------------------------------------------
-# Scope
-# -----------------------------------------------------------------------------
-# In scope:
-#   - @biokyn/core source code (token issuance, HMAC, replay store,
-#     session handling, rate limiting, Express/Next.js adapters)
-#   - biokyn.js.org site and its JavaScript
-#   - Documented deployment configurations
-#
-# Out of scope:
-#   - Claims that BioKyn does not detect all bots. The README, docs, and
-#     security page explicitly state what the package does and does not do.
-#     "BioKyn allowed Playwright to submit a form" is a documented limitation,
-#     not a vulnerability.
-#   - Vulnerabilities in third-party stores (Redis, SQLite, browsers)
-#     unless BioKyn's integration is at fault.
-#   - Rate-limit bypasses that require the attacker to already have a
-#     valid session and stay under documented quotas.
-#
-# -----------------------------------------------------------------------------
-# Response timeline
-# -----------------------------------------------------------------------------
-#   - Acknowledgement: within 72 hours
-#   - Initial assessment: within 7 days
-#   - Fix or mitigation for confirmed high-severity issues: within 30 days
-#   - Public disclosure: coordinated with the reporter, default 90 days
-#
-# -----------------------------------------------------------------------------
-# Safe harbour
-# -----------------------------------------------------------------------------
-# We will not pursue legal action against researchers who:
-#   - Test against their own deployment of BioKyn, not against third-party
-#     sites that happen to use it.
-#   - Avoid privacy violations, data destruction, and service degradation.
-#   - Report findings privately via the contacts above before disclosure.
-#   - Do not exploit a finding beyond the minimum needed to demonstrate it.

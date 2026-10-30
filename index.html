@@ -2,8 +2,14 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>BioKyn — Zero-Knowledge Proof of Biological Presence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioKyn — Private, accessible bot protection. Open source.</title>
+  <meta name="description" content="BioKyn is free, self-hosted bot protection built on Argon2id proof-of-work, RFC 9497 VOPRF tokens and WebAuthn. No puzzles, no tracking, no third-party CAPTCHA." />
+  <meta name="theme-color" content="#07090E" />
+  <meta property="og:title" content="BioKyn — Bot protection that respects your users" />
+  <meta property="og:description" content="Free, open-source, self-hosted. No puzzles. No tracking. Apache-2.0." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://biokyn.github.io/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -13,582 +19,356 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            obsidian: '#07090E',
-            surface: '#0F131D',
-            surfaceBorder: '#1A2132',
-            plasma: {
-              crimson: '#FF0055',
-              orange: '#FF5400',
-              gold: '#FFBD00',
-            }
-          }
-        }
-      }
-    }
+    tailwind.config = { theme: { extend: {
+      fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] },
+      colors: { obsidian: '#07090E', surface: '#0F131D', surfaceBorder: '#1A2132',
+        plasma: { crimson: '#FF0055', orange: '#FF5400', gold: '#FFBD00' } } } } }
   </script>
   <style>
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #07090E; }
-    ::-webkit-scrollbar-thumb { background: #1A2132; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #FF5400; }
-
-    .bg-plasma-gradient {
-      background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%);
-    }
-    .text-plasma-gradient {
-      background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .glow-plasma {
-      background: radial-gradient(circle, rgba(255, 84, 0, 0.18) 0%, rgba(255, 0, 85, 0.05) 50%, transparent 75%);
-    }
-
-    .bg-grid {
-      background-size: 32px 32px;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    }
-
-    @keyframes hub-pulse {
-      0%, 100% { transform: scale(1) rotate(45deg); filter: drop-shadow(0 0 10px rgba(255, 84, 0, 0.35)); }
-      50% { transform: scale(1.05) rotate(45deg); filter: drop-shadow(0 0 25px rgba(255, 0, 85, 0.7)); }
-    }
-    .animate-hub {
-      transform-origin: 100px 100px;
-      animation: hub-pulse 3.2s ease-in-out infinite;
-    }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #07090E; }
+    ::-webkit-scrollbar-thumb { background: #1A2132; border-radius: 3px; } ::-webkit-scrollbar-thumb:hover { background: #FF5400; }
+    .bg-plasma-gradient { background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%); }
+    .text-plasma-gradient { background: linear-gradient(135deg, #FF0055 0%, #FF5400 48%, #FFBD00 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .glow-plasma { background: radial-gradient(circle, rgba(255,84,0,.18) 0%, rgba(255,0,85,.05) 50%, transparent 75%); }
+    .bg-grid { background-size: 32px 32px; background-image: linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px); }
+    a:focus-visible, button:focus-visible { outline: 2px solid #FFBD00; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
   </style>
 </head>
 <body class="bg-obsidian text-slate-300 font-sans antialiased selection:bg-plasma-orange selection:text-white relative overflow-x-hidden">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-3 focus:py-2 focus:rounded focus:bg-white focus:text-black">Skip to content</a>
+  <div class="fixed inset-0 bg-grid pointer-events-none z-0" aria-hidden="true"></div>
+  <div class="fixed -top-40 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[500px] glow-plasma blur-3xl pointer-events-none z-0" aria-hidden="true"></div>
 
-  <!-- Ambient Grid & Glow -->
-  <div class="fixed inset-0 bg-grid pointer-events-none z-0"></div>
-  <div class="fixed -top-40 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[500px] glow-plasma blur-3xl pointer-events-none z-0"></div>
-
-  <!-- NAVIGATION -->
-  <nav class="sticky top-0 z-50 backdrop-blur-xl bg-obsidian/80 border-b border-surfaceBorder transition-all duration-300">
+  <nav class="sticky top-0 z-50 backdrop-blur-xl bg-obsidian/80 border-b border-surfaceBorder" aria-label="Primary">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-3 group">
+      <a href="#" class="flex items-center gap-3 group" aria-label="BioKyn home">
         <div class="w-8 h-8 sm:w-10 sm:h-10 transition-transform duration-300 group-hover:scale-110">
-          <svg viewBox="0 0 200 200" class="w-full h-full" shape-rendering="geometricPrecision">
+          <svg viewBox="0 0 200 200" class="w-full h-full" aria-hidden="true">
             <defs>
-              <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FF0055" />
-                <stop offset="50%" stop-color="#FF5400" />
-                <stop offset="100%" stop-color="#FFBD00" />
-              </linearGradient>
-              <mask id="navMask" maskUnits="userSpaceOnUse">
-                <rect width="200" height="200" fill="#FFFFFF" />
-                <rect x="80" y="80" width="40" height="40" rx="10" ry="10" fill="#000000" />
-              </mask>
+              <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF0055"/><stop offset="50%" stop-color="#FF5400"/><stop offset="100%" stop-color="#FFBD00"/></linearGradient>
+              <mask id="navMask" maskUnits="userSpaceOnUse"><rect width="200" height="200" fill="#fff"/><rect x="80" y="80" width="40" height="40" rx="10" ry="10" fill="#000"/></mask>
             </defs>
-            <circle cx="100" cy="100" r="72" fill="none" stroke="url(#navGrad)" stroke-width="14" />
-            <g mask="url(#navMask)">
-              <rect x="61" y="61" width="78" height="78" rx="18" ry="18" transform="rotate(45, 100, 100)" fill="url(#navGrad)" />
-            </g>
+            <circle cx="100" cy="100" r="72" fill="none" stroke="url(#navGrad)" stroke-width="14"/>
+            <g mask="url(#navMask)"><rect x="61" y="61" width="78" height="78" rx="18" ry="18" transform="rotate(45,100,100)" fill="url(#navGrad)"/></g>
           </svg>
         </div>
-        <span class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-          BioKyn
-          <span class="text-[9px] font-mono tracking-widest uppercase px-1.5 py-0.5 rounded-full bg-surface border border-surfaceBorder text-slate-400">RFC 9497</span>
-        </span>
+        <span class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-1.5">BioKyn
+          <span class="text-[9px] font-mono tracking-widest uppercase px-1.5 py-0.5 rounded-full bg-surface border border-surfaceBorder text-slate-400">v1.0</span></span>
       </a>
-
-      <!-- Desktop Nav -->
       <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-        <a href="#how-it-works" class="hover:text-white transition">How It Works</a>
-        <a href="#demo" class="hover:text-white transition flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-plasma-orange animate-ping"></span>
-          Live Simulator
-        </a>
-        <a href="#specs" class="hover:text-white transition">Specifications</a>
-        <a href="#code" class="hover:text-white transition">Integration</a>
+        <a href="#how-it-works" class="hover:text-white transition">How it works</a>
+        <a href="#demo" class="hover:text-white transition">Demo</a>
+        <a href="#code" class="hover:text-white transition">Get started</a>
+        <a href="https://github.com/biokyn/biokyn/tree/main/docs" class="hover:text-white transition">Docs</a>
       </div>
-
-      <!-- Action Button (Option 3: GitHub) -->
-      <div class="flex items-center gap-2">
-        <a href="https://github.com/biokyn/biokyn.github.io" target="_blank" class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-surface border border-surfaceBorder text-xs sm:text-sm font-mono text-slate-200 hover:border-slate-500 hover:text-white transition">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span class="hidden sm:inline">Star on</span> GitHub
-        </a>
-      </div>
+      <a href="https://github.com/biokyn/biokyn" class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-surface border border-surfaceBorder text-xs sm:text-sm font-mono text-slate-200 hover:border-slate-500 hover:text-white transition">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span class="hidden sm:inline">Star on</span> GitHub
+      </a>
     </div>
   </nav>
 
-  <!-- HERO SECTION: MODERN 2-COLUMN SPLIT LAYOUT -->
+  <main id="main">
+  <!-- HERO -->
   <section class="relative pt-12 pb-16 md:pt-24 md:pb-24 z-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-        
-        <!-- Left Column: Copy & Dual Action CTAs -->
-        <div class="lg:col-span-7 text-center lg:text-left">
-          
-          <!-- Launch Pill -->
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface border border-surfaceBorder mb-6 shadow-sm">
-            <span class="flex h-2 w-2 rounded-full bg-plasma-crimson"></span>
-            <span class="text-xs font-mono font-medium text-slate-300">Open-Source Protocol Launching Soon</span>
-            <span class="text-xs text-slate-500">•</span>
-            <span class="text-xs text-plasma-gold font-mono">Apache-2.0</span>
-          </div>
-
-          <!-- Main Headline -->
-          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.12]">
-            The CAPTCHA Is Dead.<br />
-            <span class="text-plasma-gradient">Proof of Biological Presence.</span>
-          </h1>
-
-          <!-- Subtitle -->
-          <p class="text-base sm:text-lg text-slate-400 font-normal mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            Verify living humans in <strong class="text-white font-semibold">&lt;150ms</strong> without puzzles, biometrics, or tracking cookies. Powered by involuntary neuromuscular kinematics and hardware-anchored zero-knowledge tokens.
-          </p>
-
-          <!-- DUAL ACTION BUTTONS (Option 3 + Option 1) -->
-          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 mb-10">
-            <!-- Option 3: GitHub Star/Watch Button -->
-            <a href="https://github.com/biokyn/biokyn.github.io" target="_blank" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-sm shadow-xl shadow-plasma-crimson/25 hover:shadow-plasma-orange/40 hover:-translate-y-0.5 transition flex items-center justify-center gap-2">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              Star & Watch on GitHub
-            </a>
-
-            <!-- Option 1: Native mailto: link (Zero Setup, No Keys) -->
-            <a href="mailto:aswanthaswanthr82@gmail.com?subject=BioKyn%20Waitlist%20Signup&body=Please%20notify%20me%20when%20BioKyn%20v1.0%20launches!" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-sm hover:border-slate-500 hover:text-white transition flex items-center justify-center gap-2">
-              <svg class="w-4 h-4 text-plasma-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              Get Launch Email
-            </a>
-          </div>
-
-          <div class="flex items-center justify-center lg:justify-start gap-6 text-xs font-mono text-slate-500">
-            <span>✓ 0 Visual Puzzles</span>
-            <span>•</span>
-            <span>✓ Zero Tracking</span>
-            <span>•</span>
-            <span>✓ Self-Hosted</span>
-          </div>
-
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div class="lg:col-span-7 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface border border-surfaceBorder mb-6">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-400"></span>
+          <span class="text-xs font-mono font-medium text-slate-300">v1.0 is live on npm</span>
+          <span class="text-xs text-slate-500">•</span>
+          <span class="text-xs text-plasma-gold font-mono">Apache-2.0</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.12]">
+          Bot protection that<br /><span class="text-plasma-gradient">respects your users.</span>
+        </h1>
+        <p class="text-base sm:text-lg text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+          Replace "click all the traffic lights" with cryptographic proof. BioKyn is <strong class="text-white font-semibold">free, open source and self-hosted</strong>: no puzzles, no tracking, no third-party CAPTCHA, and no data leaving your infrastructure.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 mb-10">
+          <a href="#code" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-sm shadow-xl shadow-plasma-crimson/25 hover:-translate-y-0.5 transition text-center">Get started</a>
+          <a href="https://github.com/biokyn/biokyn" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-sm hover:border-slate-500 hover:text-white transition text-center">View on GitHub</a>
+        </div>
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs font-mono text-slate-500">
+          <span>✓ No visual puzzles</span><span>✓ Zero tracking</span><span>✓ Self-hosted</span><span>✓ Free forever</span>
         </div>
       </div>
-
+      <div class="lg:col-span-5">
+        <div class="rounded-2xl bg-surface border border-surfaceBorder shadow-2xl overflow-hidden">
+          <div class="px-4 py-3 bg-obsidian border-b border-surfaceBorder font-mono text-xs text-slate-400">Install</div>
+          <div class="p-5 font-mono text-sm text-slate-200 space-y-4">
+            <div class="flex items-center justify-between gap-3 bg-black/50 border border-surfaceBorder rounded-lg px-3 py-2.5 overflow-x-auto"><code class="whitespace-nowrap"><span class="text-plasma-orange">$</span> npm install @biokyn/server @biokyn/client</code></div>
+            <ul class="text-xs text-slate-400 space-y-2 font-sans">
+              <li>• Express and Next.js adapters</li>
+              <li>• reCAPTCHA / Turnstile-compatible <code class="font-mono text-slate-300">/siteverify</code></li>
+              <li>• Redis-backed stores for multi-node deployments</li>
+              <li>• Signed releases with npm provenance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- INTERACTIVE SIMULATOR (TOUCH-READY FOR MOBILE) -->
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="py-20 sm:py-28 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">How it works</h2>
+        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Trust you can verify, not guess</h3>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">Only evidence your server can check grants a token. Browser signals can raise suspicion, but they can never grant access.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-plasma-crimson/10 border border-plasma-crimson/20 flex items-center justify-center text-plasma-crimson font-mono font-bold text-sm mb-5">01</div>
+            <h4 class="text-lg font-bold text-white mb-2">Argon2id proof-of-work</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-4">A small, memory-hard computation runs in the visitor's browser and is bound to the request. It costs a person a moment and costs a bot farm real money at scale.</p>
+          </div>
+          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">• Works with keyboard and screen readers<br/>• Tunable difficulty</div>
+        </div>
+        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-plasma-orange/10 border border-plasma-orange/20 flex items-center justify-center text-plasma-orange font-mono font-bold text-sm mb-5">02</div>
+            <h4 class="text-lg font-bold text-white mb-2">WebAuthn step-up</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-4">Returning visitors can use a passkey credential your server registered. Signature counters are checked, and credentials expire and can be revoked.</p>
+          </div>
+          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">• Counter-checked assertions<br/>• Anonymous registration with PoW</div>
+        </div>
+        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-plasma-gold/10 border border-plasma-gold/20 flex items-center justify-center text-plasma-gold font-mono font-bold text-sm mb-5">03</div>
+            <h4 class="text-lg font-bold text-white mb-2">Privacy-preserving tokens</h4>
+            <p class="text-sm text-slate-400 leading-relaxed mb-4">Tokens are issued through an RFC 9497 VOPRF (ristretto255-SHA512), single-use, and replay-protected, with no cookies and no cross-site identifiers.</p>
+          </div>
+          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">• Verified against the official RFC vectors<br/>• Shared nullifier store</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
   <section id="demo" class="py-16 sm:py-24 bg-surface/40 border-y border-surfaceBorder relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      
       <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Live Kinematic Simulator</h2>
-        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Test Your Movement (Mouse or Touch)</h3>
-        <p class="text-slate-400 mt-2 text-xs sm:text-sm">
-          Move your cursor or swipe on your phone. The DSP measures your natural micro-jitter against synthetic curves.
-        </p>
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Motion signal demo</h2>
+        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">See how movement becomes a signal</h3>
+        <p class="text-slate-400 mt-2 text-xs sm:text-sm">Move your cursor or swipe in the box. The numbers below are computed live from your own movement in this page, with nothing sent anywhere. In BioKyn, motion is an <strong class="text-slate-200">advisory</strong> signal that can add friction; proof-of-work and WebAuthn are what grant tokens. This is an illustration, not a real token issuance.</p>
       </div>
-
-      <!-- Simulator Container -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-obsidian border border-surfaceBorder rounded-2xl p-4 sm:p-6 shadow-2xl">
-        
-        <!-- Left: Interactive Canvas Zone -->
         <div class="lg:col-span-7 flex flex-col">
           <div class="flex items-center justify-between pb-3 mb-3 border-b border-surfaceBorder text-xs font-mono">
-            <span class="flex items-center gap-2 text-slate-400 text-[11px] sm:text-xs">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              SWIPE / MOVE INSIDE BOX
+            <span class="flex items-center gap-2 text-slate-400 text-[11px] sm:text-xs"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>MOVE OR SWIPE INSIDE THE BOX</span>
+            <span class="flex gap-2">
+              <button id="btn-reset" class="px-2.5 py-1 rounded bg-surface border border-surfaceBorder text-[11px] sm:text-xs text-slate-300 hover:border-slate-500 transition">Reset</button>
+              <button id="btn-bot-sim" class="px-2.5 py-1 rounded bg-surface border border-surfaceBorder text-[11px] sm:text-xs text-slate-300 hover:text-plasma-orange hover:border-plasma-orange transition">Run scripted path</button>
             </span>
-            <button id="btn-bot-sim" class="px-2.5 py-1 rounded bg-surface border border-surfaceBorder text-[11px] sm:text-xs text-slate-300 hover:text-plasma-orange hover:border-plasma-orange transition">
-              Test AI Bot Path
-            </button>
           </div>
-
-          <div id="canvas-container" class="relative w-full h-72 sm:h-80 rounded-xl bg-surface/70 border border-surfaceBorder/80 overflow-hidden cursor-crosshair flex items-center justify-center touch-none">
+          <div class="relative w-full h-72 sm:h-80 rounded-xl bg-surface/70 border border-surfaceBorder/80 overflow-hidden cursor-crosshair flex items-center justify-center touch-none" role="img" aria-label="Pointer movement test area">
             <canvas id="motionCanvas" class="w-full h-full absolute inset-0"></canvas>
-            <div id="canvas-hint" class="pointer-events-none text-center px-4 text-xs font-mono text-slate-500">
-              [ TOUCH OR MOVE HERE ]<br/>Draw a smooth curve to test tremor
-            </div>
+            <div id="canvas-hint" class="pointer-events-none text-center px-4 text-xs font-mono text-slate-500">[ MOVE OR TOUCH HERE ]<br/>Draw a curve</div>
           </div>
-
           <div class="mt-3 flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-slate-500">
-            <span>Uniform 100 Hz Interpolator</span>
+            <span>Keyboard users: the real BioKyn flow needs no pointer at all</span>
             <span id="coord-readout">X: 000 | Y: 000 | N: 0</span>
           </div>
         </div>
-
-        <!-- Right: Telemetry & Verdict Metrics -->
         <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-          
-          <!-- Verdict Badge -->
-          <div id="verdict-card" class="p-4 rounded-xl bg-surface border border-surfaceBorder">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-mono uppercase text-slate-400">Classification</span>
-              <span id="verdict-tag" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-400">WAITING</span>
-            </div>
-            <div id="verdict-title" class="text-base sm:text-lg font-bold text-white mt-1">Awaiting Input Stream</div>
-            <div id="verdict-desc" class="text-xs text-slate-400 mt-1">Draw or swipe inside the pad to trigger DSP verification.</div>
+          <div class="p-4 rounded-xl bg-surface border border-surfaceBorder" aria-live="polite">
+            <div class="flex items-center justify-between"><span class="text-[11px] font-mono uppercase text-slate-400">Signal</span>
+              <span id="verdict-tag" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-400">WAITING</span></div>
+            <div id="verdict-title" class="text-base sm:text-lg font-bold text-white mt-1">Awaiting input</div>
+            <div id="verdict-desc" class="text-xs text-slate-400 mt-1">Move inside the box to measure.</div>
           </div>
-
-          <!-- DSP Spectral Gauges -->
           <div class="space-y-3 font-mono text-xs">
-            <div>
-              <div class="flex justify-between text-slate-400 mb-1 text-[11px]">
-                <span>8–12 Hz Tremor Ratio (τ)</span>
-                <span id="val-tremor" class="text-white">0.0%</span>
-              </div>
-              <div class="h-2 rounded-full bg-surface overflow-hidden">
-                <div id="bar-tremor" class="h-full bg-plasma-gradient w-0 transition-all duration-200"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-slate-400 mb-1 text-[11px]">
-                <span>Spectral Flatness (Anti-Noise)</span>
-                <span id="val-flatness" class="text-white">0.00</span>
-              </div>
-              <div class="h-2 rounded-full bg-surface overflow-hidden">
-                <div id="bar-flatness" class="h-full bg-blue-500 w-0 transition-all duration-200"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-slate-400 mb-1 text-[11px]">
-                <span>Third-Difference Jerk (κ)</span>
-                <span id="val-jerk" class="text-white">0.00</span>
-              </div>
-              <div class="h-2 rounded-full bg-surface overflow-hidden">
-                <div id="bar-jerk" class="h-full bg-plasma-gold w-0 transition-all duration-200"></div>
-              </div>
-            </div>
+            <div><div class="flex justify-between text-slate-400 mb-1 text-[11px]"><span>Micro-jitter (px)</span><span id="val-jitter" class="text-white">0.00</span></div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden"><div id="bar-jitter" class="h-full bg-plasma-gradient w-0 transition-all duration-200"></div></div></div>
+            <div><div class="flex justify-between text-slate-400 mb-1 text-[11px]"><span>Speed variation (CV)</span><span id="val-cv" class="text-white">0.00</span></div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden"><div id="bar-cv" class="h-full bg-blue-500 w-0 transition-all duration-200"></div></div></div>
+            <div><div class="flex justify-between text-slate-400 mb-1 text-[11px]"><span>Third-difference jerk (px)</span><span id="val-jerk" class="text-white">0.00</span></div>
+              <div class="h-2 rounded-full bg-surface overflow-hidden"><div id="bar-jerk" class="h-full bg-plasma-gold w-0 transition-all duration-200"></div></div></div>
           </div>
-
-          <!-- Token Preview -->
           <div class="p-3 rounded-lg bg-black/60 border border-surfaceBorder font-mono text-[10px]">
-            <div class="text-slate-400 mb-1 flex items-center justify-between">
-              <span>Privacy Pass Token (RFC 9578)</span>
-              <span id="token-status" class="text-slate-500">[ UNISSUED ]</span>
-            </div>
-            <div id="token-hash" class="text-slate-500 truncate">0x0000000000000000000000000000000000000000000000000000000000000000</div>
+            <div class="text-slate-400">In production, your server issues the token after verifying proof-of-work.</div>
           </div>
-
         </div>
-
       </div>
-
     </div>
   </section>
 
-  <!-- ARCHITECTURE (THE 3 DEFENSE PILLARS) -->
-  <section id="how-it-works" class="py-20 sm:py-28 relative z-10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-3">Architecture</h2>
-        <h3 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">The Three Layers of Biological Presence</h3>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-plasma-crimson/10 border border-plasma-crimson/20 flex items-center justify-center text-plasma-crimson font-mono font-bold text-sm mb-5">
-              01
-            </div>
-            <h4 class="text-lg font-bold text-white mb-2">Neuromuscular Kinematics</h4>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-              Real human hands vibrate involuntarily at 8–12 Hz. BioKyn extracts this tremor ratio with Welch PSD running in an off-thread Web Worker.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">
-            • Minimum Jerk Derivation<br/>• Nyquist Frequency Clamping
-          </div>
-        </div>
-
-        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-plasma-orange/10 border border-plasma-orange/20 flex items-center justify-center text-plasma-orange font-mono font-bold text-sm mb-5">
-              02
-            </div>
-            <h4 class="text-lg font-bold text-white mb-2">Hardware Enclave Anchor</h4>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-              Headless bot clouds (AWS, GCP) have no physical chips. BioKyn verifies the device's native TPM, Secure Enclave, or StrongBox silently via WebAuthn.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">
-            • Silent WebAuthn Level 3<br/>• Anti-CDP Sandbox Checks
-          </div>
-        </div>
-
-        <div class="p-6 sm:p-8 rounded-2xl bg-surface border border-surfaceBorder flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-plasma-gold/10 border border-plasma-gold/20 flex items-center justify-center text-plasma-gold font-mono font-bold text-sm mb-5">
-              03
-            </div>
-            <h4 class="text-lg font-bold text-white mb-2">Zero-Knowledge Tokens</h4>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-              No coordinates or hardware IDs ever reach your server. Blinds the token using RFC 9497 VOPRF over ristretto255-SHA512.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-slate-500 pt-3 border-t border-surfaceBorder/60">
-            • Privacy Pass RFC 9578<br/>• Replay Nullifier Cache
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- CODE SNIPPET SECTION -->
-  <section id="code" class="py-16 sm:py-24 bg-surface/30 border-y border-surfaceBorder relative z-10">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6">
-      
+  <!-- CODE -->
+  <section id="code" class="py-16 sm:py-24 relative z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
       <div class="text-center max-w-2xl mx-auto mb-10">
-        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-2">Developer Experience</h2>
-        <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Two Lines of Code</h3>
+        <h2 class="text-xs font-mono font-bold tracking-widest text-plasma-orange uppercase mb-2">Developer experience</h2>
+        <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Up and running in minutes</h3>
       </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-2xl bg-surface border border-surfaceBorder overflow-hidden shadow-2xl">
+          <div class="px-4 py-3 bg-obsidian border-b border-surfaceBorder flex items-center justify-between font-mono text-xs"><span class="text-slate-400">server.ts</span><span class="text-plasma-orange">@biokyn/server</span></div>
+          <div class="p-4 sm:p-6 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed"><pre><code><span class="text-plasma-crimson">import</span> { BioKynVerifier, biokynExpress, generateServerSecrets,
+  createRateLimiter, MemoryRateLimitStore } <span class="text-plasma-crimson">from</span> <span class="text-plasma-gold">'@biokyn/server'</span>;
 
-      <div class="rounded-2xl bg-surface border border-surfaceBorder overflow-hidden shadow-2xl">
-        <div class="px-4 py-3 bg-obsidian border-b border-surfaceBorder flex items-center justify-between font-mono text-xs">
-          <span class="text-slate-400">middleware.ts</span>
-          <span class="text-plasma-orange">npm i @biokyn/core</span>
+<span class="text-plasma-crimson">const</span> verifier = <span class="text-plasma-crimson">new</span> <span class="text-blue-400">BioKynVerifier</span>({
+  issuer: <span class="text-plasma-gold">'verify.example.com'</span>,
+  ...<span class="text-blue-400">generateServerSecrets</span>(),
+  sites: [{ origin: <span class="text-plasma-gold">'https://example.com'</span>,
+            secret: process.env.BIOKYN_SITE_SECRET! }],
+});
+
+app.<span class="text-blue-400">use</span>(express.<span class="text-blue-400">json</span>());
+app.<span class="text-blue-400">use</span>(<span class="text-blue-400">biokynExpress</span>(verifier, {
+  basePath: <span class="text-plasma-gold">'/biokyn'</span>,
+  rateLimit: <span class="text-blue-400">createRateLimiter</span>({ store: <span class="text-plasma-crimson">new</span> <span class="text-blue-400">MemoryRateLimitStore</span>() }),
+}));</code></pre></div>
         </div>
-        <div class="p-4 sm:p-6 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed">
-<pre><code><span class="text-slate-500">// Client: Generates zero-knowledge blind token silently</span>
-<span class="text-plasma-crimson">const</span> biokyn = BioKynClient.<span class="text-blue-400">init</span>({ issuanceEndpoint: <span class="text-plasma-gold">'/api/biokyn/issue'</span> });
-<span class="text-plasma-crimson">const</span> token = <span class="text-plasma-crimson">await</span> biokyn.<span class="text-blue-400">getToken</span>(); <span class="text-slate-500">// &lt;150ms background check</span>
+        <div class="rounded-2xl bg-surface border border-surfaceBorder overflow-hidden shadow-2xl">
+          <div class="px-4 py-3 bg-obsidian border-b border-surfaceBorder flex items-center justify-between font-mono text-xs"><span class="text-slate-400">browser.ts</span><span class="text-plasma-orange">@biokyn/client</span></div>
+          <div class="p-4 sm:p-6 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed"><pre><code><span class="text-plasma-crimson">import</span> { requestInclusiveToken } <span class="text-plasma-crimson">from</span> <span class="text-plasma-gold">'@biokyn/client'</span>;
 
-<span class="text-slate-500">// Server: Drop-in route defense (Express / Next.js)</span>
-app.<span class="text-blue-400">post</span>(<span class="text-plasma-gold">'/api/login'</span>, <span class="text-blue-400">biokynMiddleware</span>(server), (req, res) => {
-  res.<span class="text-blue-400">json</span>({ verified: <span class="text-plasma-crimson">true</span>, message: <span class="text-plasma-gold">"Living human authenticated!"</span> });
-});</code></pre>
+<span class="text-plasma-crimson">const</span> { token } = <span class="text-plasma-crimson">await</span> <span class="text-blue-400">requestInclusiveToken</span>({
+  basePath: <span class="text-plasma-gold">'/biokyn'</span>,
+  expectedPublicKey, <span class="text-slate-500">// pin your issuer key</span>
+});
+
+<span class="text-slate-500">// Send `token` to your backend, which calls</span>
+<span class="text-slate-500">// POST /siteverify with { secret, response: token }</span></code></pre></div>
         </div>
       </div>
-
+      <p class="text-center text-xs text-slate-500 mt-6 font-mono">Going to production? Read the <a class="text-slate-300 underline hover:text-white" href="https://github.com/biokyn/biokyn/blob/main/docs/DEPLOYMENT.md">deployment guide</a> for shared Redis stores, key rotation and TLS.</p>
     </div>
   </section>
 
-  <!-- BOTTOM WAITLIST CTA (DUAL OPTIONS 1 + 3) -->
+  <!-- CTA -->
   <section class="py-20 sm:py-28 relative z-10 bg-gradient-to-b from-surface/50 to-obsidian">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-      
-      <h3 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-        Be Ready for the v1.0 Launch.
-      </h3>
-      <p class="text-slate-400 text-sm sm:text-base mb-8 max-w-lg mx-auto">
-        BioKyn is fully open-source under Apache-2.0. Choose how you'd like to be notified when the npm packages drop:
-      </p>
-
-      <!-- DUAL BUTTONS -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-md mx-auto mb-8">
-        
-        <!-- Option 3: GitHub Star / Watch -->
-        <a href="https://github.com/biokyn/biokyn.github.io" target="_blank" class="w-full sm:w-auto flex-1 px-6 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-sm shadow-xl shadow-plasma-crimson/25 hover:opacity-95 transition flex items-center justify-center gap-2">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          Watch on GitHub
-        </a>
-
-        <!-- Option 1: Direct mailto: Email link -->
-        <a href="mailto:aswanthr82@gmail.com?subject=BioKyn%20Waitlist%20Signup&body=Please%20notify%20me%20when%20BioKyn%20v1.0%20launches!" class="w-full sm:w-auto flex-1 px-6 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-sm hover:border-slate-500 hover:text-white transition flex items-center justify-center gap-2">
-          <svg class="w-4 h-4 text-plasma-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          Notify via Email
-        </a>
-
+      <h3 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">Free forever. Open to everyone.</h3>
+      <p class="text-slate-400 text-sm sm:text-base mb-8 max-w-lg mx-auto">BioKyn is Apache-2.0 licensed. Try it, star it, file an issue, or send a pull request.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-xl mx-auto mb-8">
+        <a href="https://www.npmjs.com/org/biokyn" class="w-full sm:flex-1 px-6 py-3.5 rounded-xl bg-plasma-gradient text-white font-semibold text-sm shadow-xl shadow-plasma-crimson/25 hover:opacity-95 transition text-center">Install from npm</a>
+        <a href="https://github.com/biokyn/biokyn" class="w-full sm:flex-1 px-6 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-sm hover:border-slate-500 hover:text-white transition text-center">Star on GitHub</a>
+        <a href="https://github.com/biokyn/biokyn/discussions" class="w-full sm:flex-1 px-6 py-3.5 rounded-xl bg-surface border border-surfaceBorder text-slate-200 font-semibold text-sm hover:border-slate-500 hover:text-white transition text-center">Join Discussions</a>
       </div>
-
-      <div class="text-xs font-mono text-slate-500">
-        aswanthr82@gmail.com • Apache-2.0 License • Free Forever
-      </div>
-
+      <div class="text-xs font-mono text-slate-500">Apache-2.0 • No accounts • No telemetry</div>
     </div>
   </section>
+  </main>
 
-  <!-- FOOTER -->
   <footer class="py-8 border-t border-surfaceBorder bg-obsidian text-[11px] font-mono text-slate-500">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-      <div>BioKyn Protocol — Proof of Biological Presence</div>
-      <div class="flex items-center gap-4">
-        <a href="https://github.com/biokyn/biokyn.github.io" target="_blank" class="hover:text-white transition">GitHub</a>
-        <a href="https://www.ietf.org/rfc/rfc9497.html" target="_blank" class="hover:text-white transition">RFC 9497</a>
-        <a href="https://www.ietf.org/rfc/rfc9578.html" target="_blank" class="hover:text-white transition">RFC 9578</a>
+      <div>© BioKyn contributors • Apache-2.0</div>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="https://github.com/biokyn/biokyn" class="hover:text-white transition">GitHub</a>
+        <a href="https://www.npmjs.com/org/biokyn" class="hover:text-white transition">npm</a>
+        <a href="https://github.com/biokyn/biokyn/blob/main/SECURITY.md" class="hover:text-white transition">Security</a>
+        <a href="https://github.com/biokyn/biokyn/blob/main/CODE_OF_CONDUCT.md" class="hover:text-white transition">Code of Conduct</a>
+        <a href="https://www.rfc-editor.org/rfc/rfc9497.html" class="hover:text-white transition">RFC 9497</a>
       </div>
     </div>
   </footer>
 
-  <!-- SIMULATOR SCRIPT (MOUSE + TOUCH DYNAMIC) -->
   <script>
-    const canvas = document.getElementById('motionCanvas');
-    const ctx = canvas.getContext('2d');
-    const hint = document.getElementById('canvas-hint');
-    const coordReadout = document.getElementById('coord-readout');
-    const verdictTag = document.getElementById('verdict-tag');
-    const verdictTitle = document.getElementById('verdict-title');
-    const verdictDesc = document.getElementById('verdict-desc');
-    const valTremor = document.getElementById('val-tremor');
-    const barTremor = document.getElementById('bar-tremor');
-    const valFlatness = document.getElementById('val-flatness');
-    const barFlatness = document.getElementById('bar-flatness');
-    const valJerk = document.getElementById('val-jerk');
-    const barJerk = document.getElementById('bar-jerk');
-    const tokenStatus = document.getElementById('token-status');
-    const tokenHash = document.getElementById('token-hash');
-    const btnBotSim = document.getElementById('btn-bot-sim');
-
-    let points = [];
-    let isBotSimulating = false;
+    const $ = (id) => document.getElementById(id);
+    const canvas = $('motionCanvas'), ctx = canvas.getContext('2d');
+    let points = [], botRunning = false;
 
     function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const r = canvas.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+      canvas.width = r.width * d; canvas.height = r.height * d;
+      ctx.setTransform(d, 0, 0, d, 0, 0); render();
     }
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
-    function addInputPoint(x, y) {
-      if (isBotSimulating) return;
-      hint.style.opacity = '0';
-      const t = performance.now();
-      points.push({ x, y, t });
+    function addPoint(x, y) {
+      if (botRunning) return;
+      $('canvas-hint').style.opacity = '0';
+      points.push({ x, y, t: performance.now() });
       if (points.length > 70) points.shift();
-
-      coordReadout.innerText = `X: ${Math.round(x).toString().padStart(3, '0')} | Y: ${Math.round(y).toString().padStart(3, '0')} | N: ${points.length}`;
-      renderCanvas();
-      evaluateHumanTelemetry();
+      $('coord-readout').innerText = `X: ${String(Math.round(x)).padStart(3,'0')} | Y: ${String(Math.round(y)).padStart(3,'0')} | N: ${points.length}`;
+      render(); analyze();
     }
+    canvas.addEventListener('mousemove', (e) => { const r = canvas.getBoundingClientRect(); addPoint(e.clientX - r.left, e.clientY - r.top); });
+    function touch(e) { e.preventDefault(); const r = canvas.getBoundingClientRect(), t = e.touches[0]; if (t) addPoint(t.clientX - r.left, t.clientY - r.top); }
+    canvas.addEventListener('touchstart', touch, { passive: false });
+    canvas.addEventListener('touchmove', touch, { passive: false });
 
-    // Mouse Listener
-    canvas.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      addInputPoint(e.clientX - rect.left, e.clientY - rect.top);
-    });
-
-    // Touch Listeners (Mobile Dynamic)
-    function handleTouch(e) {
-      e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
-      if (touch) {
-        addInputPoint(touch.clientX - rect.left, touch.clientY - rect.top);
-      }
-    }
-    canvas.addEventListener('touchstart', handleTouch, { passive: false });
-    canvas.addEventListener('touchmove', handleTouch, { passive: false });
-
-    function renderCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
-      if (points.length < 2) return;
-
+    function render() {
+      const r = canvas.getBoundingClientRect(); ctx.clearRect(0, 0, r.width, r.height);
       for (let i = 1; i < points.length; i++) {
-        const p1 = points[i - 1];
-        const p2 = points[i];
-        const alpha = i / points.length;
-
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = `rgba(255, 84, 0, ${alpha * 0.9})`;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.stroke();
-
-        if (i % 4 === 0) {
-          ctx.beginPath();
-          ctx.arc(p2.x, p2.y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 0, 85, ${alpha * 0.75})`;
-          ctx.fill();
-        }
+        const a = points[i-1], b = points[i], al = i / points.length;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(255,84,0,${al*.9})`; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
       }
     }
 
-    function evaluateHumanTelemetry() {
+    // Real measurements from the captured points.
+    function metrics(p) {
+      const n = p.length;
+      // micro-jitter: RMS residual from a 5-point moving average
+      let ss = 0, c = 0;
+      for (let i = 2; i < n - 2; i++) {
+        let mx = 0, my = 0; for (let k = -2; k <= 2; k++) { mx += p[i+k].x; my += p[i+k].y; }
+        ss += (p[i].x - mx/5) ** 2 + (p[i].y - my/5) ** 2; c++;
+      }
+      const jitter = c ? Math.sqrt(ss / c) : 0;
+      // speed coefficient of variation
+      const v = []; for (let i = 1; i < n; i++) { const dt = Math.max(1, p[i].t - p[i-1].t); v.push(Math.hypot(p[i].x-p[i-1].x, p[i].y-p[i-1].y) / dt); }
+      const m = v.reduce((a,b)=>a+b,0) / v.length, sd = Math.sqrt(v.reduce((a,b)=>a+(b-m)**2,0) / v.length);
+      const cv = m > 0 ? sd / m : 0;
+      // third-difference jerk magnitude
+      let j = 0, jc = 0;
+      for (let i = 3; i < n; i++) {
+        const dx = p[i].x - 3*p[i-1].x + 3*p[i-2].x - p[i-3].x, dy = p[i].y - 3*p[i-1].y + 3*p[i-2].y - p[i-3].y;
+        j += Math.hypot(dx, dy); jc++;
+      }
+      return { jitter, cv, jerk: jc ? j / jc : 0 };
+    }
+
+    function show(m, human) {
+      $('val-jitter').innerText = m.jitter.toFixed(2); $('bar-jitter').style.width = Math.min(100, m.jitter / 2 * 100) + '%';
+      $('val-cv').innerText = m.cv.toFixed(2); $('bar-cv').style.width = Math.min(100, m.cv * 100) + '%';
+      $('val-jerk').innerText = m.jerk.toFixed(2); $('bar-jerk').style.width = Math.min(100, m.jerk / 3 * 100) + '%';
+      const tag = $('verdict-tag');
+      if (human) {
+        tag.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'; tag.innerText = 'HUMAN-LIKE';
+        $('verdict-title').innerText = 'Natural movement variation'; $('verdict-desc').innerText = 'Irregular speed and micro-jitter, typical of a hand on a pointer.';
+      } else {
+        tag.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30'; tag.innerText = 'SCRIPTED-LIKE';
+        $('verdict-title').innerText = 'Unnaturally smooth path'; $('verdict-desc').innerText = 'Near-zero jitter and uniform speed. BioKyn would add friction (step-up), not trust.';
+      }
+    }
+
+    function analyze() {
       if (points.length < 20) return;
-
-      let totalDist = 0;
-      for (let i = 1; i < points.length; i++) {
-        const dx = points[i].x - points[i - 1].x;
-        const dy = points[i].y - points[i - 1].y;
-        totalDist += Math.sqrt(dx * dx + dy * dy);
-      }
-      if (totalDist < 25) return;
-
-      const tremorRatio = 14.5 + (Math.sin(performance.now() / 450) * 3);
-      const flatness = 0.29 + (Math.cos(performance.now() / 550) * 0.07);
-      const jerkKurtosis = 3.8 + (Math.sin(performance.now() / 400) * 0.8);
-
-      valTremor.innerText = `${tremorRatio.toFixed(1)}%`;
-      barTremor.style.width = `${(tremorRatio / 25) * 100}%`;
-
-      valFlatness.innerText = flatness.toFixed(2);
-      barFlatness.style.width = `${(flatness / 1) * 100}%`;
-
-      valJerk.innerText = jerkKurtosis.toFixed(2);
-      barJerk.style.width = `${(jerkKurtosis / 8) * 100}%`;
-
-      verdictTag.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-      verdictTag.innerText = "VERIFIED HUMAN";
-      verdictTitle.innerText = "8–12 Hz Tremor Locked";
-      verdictDesc.innerText = "Biological frequency confirmed via Welch PSD. Hardware attestation valid.";
-
-      tokenStatus.innerText = "[ VALID TOKEN ]";
-      tokenStatus.className = "text-emerald-400 font-bold";
-      tokenHash.innerText = "0x" + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+      let d = 0; for (let i = 1; i < points.length; i++) d += Math.hypot(points[i].x-points[i-1].x, points[i].y-points[i-1].y);
+      if (d < 25) return;
+      const m = metrics(points); show(m, m.jitter >= 0.12 && m.cv >= 0.08);
     }
 
-    // Bot Simulation Handler
-    btnBotSim.addEventListener('click', () => {
-      isBotSimulating = true;
-      hint.style.opacity = '0';
-      points = [];
-      const rect = canvas.getBoundingClientRect();
-      const startX = 30, startY = rect.height / 2;
-      const endX = rect.width - 30, endY = rect.height / 2;
-      const controlX = rect.width / 2, controlY = 25;
+    function reset() {
+      botRunning = false; points = []; render(); $('canvas-hint').style.opacity = '1';
+      $('coord-readout').innerText = 'X: 000 | Y: 000 | N: 0';
+      ['jitter','cv','jerk'].forEach((k) => { $('val-'+k).innerText = '0.00'; $('bar-'+k).style.width = '0'; });
+      const tag = $('verdict-tag'); tag.className = 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-400'; tag.innerText = 'WAITING';
+      $('verdict-title').innerText = 'Awaiting input'; $('verdict-desc').innerText = 'Move inside the box to measure.';
+    }
+    $('btn-reset').addEventListener('click', reset);
 
-      let progress = 0;
-      function animateBot() {
-        progress += 0.03;
-        const t = progress;
-        const curX = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * controlX + t * t * endX;
-        const curY = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * controlY + t * t * endY;
-
-        points.push({ x: curX, y: curY, t: performance.now() });
-        renderCanvas();
-
-        if (progress < 1) {
-          requestAnimationFrame(animateBot);
-        } else {
-          isBotSimulating = false;
-          valTremor.innerText = "1.1% (FAIL)";
-          barTremor.style.width = "4%";
-          valFlatness.innerText = "0.91 (BOT)";
-          barFlatness.style.width = "91%";
-          valJerk.innerText = "19.2 (ABNORMAL)";
-          barJerk.style.width = "95%";
-
-          verdictTag.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30";
-          verdictTag.innerText = "BOT REJECTED";
-          verdictTitle.innerText = "Synthetic Bézier Path Detected";
-          verdictDesc.innerText = "Flat frequency spectrum. Lacks biological neuromuscular micro-vibration.";
-
-          tokenStatus.innerText = "[ DENIED ]";
-          tokenStatus.className = "text-rose-400 font-bold";
-          tokenHash.innerText = "0x0000000000000000000000000000000000000000000000000000000000000000";
-        }
-      }
-      requestAnimationFrame(animateBot);
+    $('btn-bot-sim').addEventListener('click', () => {
+      reset(); botRunning = true; $('canvas-hint').style.opacity = '0';
+      const r = canvas.getBoundingClientRect(), sx = 30, sy = r.height/2, ex = r.width-30, ey = r.height/2, cx = r.width/2, cy = 25;
+      const steps = 60; let i = 0;
+      (function step() {
+        const t = ++i / steps;
+        points.push({ x: (1-t)*(1-t)*sx + 2*(1-t)*t*cx + t*t*ex, y: (1-t)*(1-t)*sy + 2*(1-t)*t*cy + t*t*ey, t: i * 16 });
+        render();
+        if (i < steps) requestAnimationFrame(step);
+        else { botRunning = false; show(metrics(points), false); }
+      })();
     });
+
+    resizeCanvas();
   </script>
 </body>
 </html>
